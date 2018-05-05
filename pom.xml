@@ -13,6 +13,11 @@
         <version>2.0.1.RELEASE</version>
     </parent>
 
+    <properties>
+        <java.version>1.8</java.version>
+        <version.log4j>1.2.17</version.log4j>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -28,12 +33,12 @@
             <artifactId>json-path</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>${version.log4j}</version>
+        </dependency>
     </dependencies>
-
-    <properties>
-        <java.version>1.8</java.version>
-    </properties>
-
 
     <build>
         <plugins>
