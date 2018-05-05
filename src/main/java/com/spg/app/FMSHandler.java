@@ -11,7 +11,9 @@ import com.spg.enums.Status;
 import com.spg.model.Connection;
 import com.spg.request.ConnectionRequest;
 import com.spg.request.MessageUpdateRequset;
+import com.spg.request.SubscriberRequest;
 import com.spg.response.ConnectionResponse;
+import com.spg.response.ErrorResponse;
 import com.spg.response.PublishResponse;
 import com.spg.response.Response;
 
@@ -47,30 +49,79 @@ public class FMSHandler {
 		String secondaryUser = connectionRequest.getUser2();
 		//String primaryUser = connectionRequest.getFriends()[0];
 		//String secondaryUser = connectionRequest.getFriends()[1];
-		Connection friend = new Connection(primaryUser, secondaryUser,
-				ConnectionType.FRIEND, Status.SUBSCRIBERD);
-		connectionsList.add(friend);
-		return new Response(true);
+
+		if(!connectionPresent(primaryUser, secondaryUser)) {
+			Connection friend = new Connection(primaryUser, secondaryUser,
+					ConnectionType.FRIEND, Status.SUBSCRIBERD);
+			connectionsList.add(friend);
+			return new Response(true);
+		}else {
+			return new ErrorResponse(false,"Cannot add connection, connection already present.");
+		}
 	}
 	
 	public ConnectionResponse findCommonConnetions(ConnectionRequest connectionRequest) {
-		return new ConnectionResponse(true, findConnections(connectionRequest.getUser1()));
+		List<String> connectionsOfUser1 = findConnections(connectionRequest.getUser1());
+		List<String> connectionsOfUser2 = findConnections(connectionRequest.getUser2());
+		List<String> commonConnection = new ArrayList<String>();
+		Iterator<String>iter = connectionsOfUser1.iterator();
+		while(iter.hasNext()) {
+			String connectionEmail = iter.next();
+			if(connectionsOfUser2.contains(connectionEmail))
+				commonConnection.add(connectionEmail);
+		}
+		return new ConnectionResponse(true, commonConnection);
 	}
 	
 	public PublishResponse publish(MessageUpdateRequset msgUpdateRequest) {
-		LOGGER.info("Updates sent to subscribers");
-		return new PublishResponse(true, findConnections(msgUpdateRequest.getSender()));
+		List<String> subscribersList = new ArrayList<String>();
+		Iterator<Connection> iter = connectionsList.iterator();
+		while(iter.hasNext()) {
+			Connection connection = iter.next();
+			if(connection.getPrimary().equals(msgUpdateRequest.getSender())
+					&& connection.getStatus()==Status.SUBSCRIBERD) {
+				subscribersList.add(connection.getSecondary());
+				LOGGER.info("Updates sent to subscriber: "+connection.getSecondary());
+			}
+		}
+		return new PublishResponse(true, subscribersList);
 	}
 	
-	public Response upsertSubscriber(ConnectionRequest connectionRequest, boolean add) {
-		String primaryUser = connectionRequest.getUser1();
-		String secondaryUser = connectionRequest.getUser2();
+	public Response upsertSubscriber(SubscriberRequest subscriberRequest, boolean add) {
+		LOGGER.info("upsertSubscriber: "+subscriberRequest.toString());
+		LOGGER.info("subcribe: "+add);
+		String primaryUser = subscriberRequest.getRequestor();
+		String secondaryUser = subscriberRequest.getTarget();
 		//String primaryUser = connectionRequest.getFriends()[0];
 		//String secondaryUser = connectionRequest.getFriends()[1];
-		Connection friend = new Connection(primaryUser, secondaryUser,
-				ConnectionType.SUBSCRIBER, 
-				add==true?Status.SUBSCRIBERD:Status.BLOCKED);
-		connectionsList.add(friend);
+		if(add) {
+			if(!connectionPresent(primaryUser,secondaryUser)){
+				LOGGER.info("adding new subscriber");
+				Connection subscriber = new Connection( primaryUser, secondaryUser,
+														ConnectionType.SUBSCRIBER, 
+														add==true?Status.SUBSCRIBERD:Status.UNSUBSCRIBED);
+				connectionsList.add(subscriber);
+			}else {
+				LOGGER.info("subscriber already present");
+				return new ErrorResponse(false,"Cannot add connection, connection already present.");
+			}
+		}else {
+			if(connectionPresent(primaryUser,secondaryUser)){
+				LOGGER.info("removing a subscriber");
+				Iterator<Connection> iter = connectionsList.iterator();
+				while(iter.hasNext()) {
+					Connection connection = iter.next();
+					if(connection.getPrimary().equals(primaryUser) 
+							&& connection.getSecondary().equals(secondaryUser)) {
+						connection.setStatus(Status.UNSUBSCRIBED);
+						break;
+					}
+				}
+			}else {
+				LOGGER.info("subscriber not present");
+				return new ErrorResponse(false,"Cannot not block, connection not present.");
+			}
+		}
 		return new Response(true);
 	}
 
@@ -88,5 +139,19 @@ public class FMSHandler {
 		}
 		LOGGER.info("findConnections: Returning common connections: "+connections.size());
 		return connections;
+	}
+
+	private boolean connectionPresent(String primaryUser, String secondaryUser) {
+		if(connectionsList.isEmpty())
+			return false;
+		Iterator<Connection> iter = connectionsList.iterator();
+		while(iter.hasNext()) {
+			Connection connection = iter.next();
+			if(connection.getPrimary().equals(primaryUser)
+					&& connection.getSecondary().equals(secondaryUser)) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

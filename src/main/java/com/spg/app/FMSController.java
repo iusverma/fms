@@ -12,10 +12,10 @@ import com.spg.model.Connection;
 import com.spg.request.ConnectionRequest;
 import com.spg.request.MessageUpdateRequset;
 import com.spg.request.Request;
+import com.spg.request.SubscriberRequest;
 import com.spg.response.ConnectionResponse;
 import com.spg.response.PublishResponse;
 import com.spg.response.Response;
-import com.spg.utils.ConversionUtils;
 
 @RestController
 public class FMSController {
@@ -57,17 +57,18 @@ public class FMSController {
 
 	// Use case 4 for adding subscriber
 	@RequestMapping(value = "/subscriber", method = RequestMethod.PUT)
-	public Response addSubscriber(@RequestBody ConnectionRequest connectionRequest) {
+	public Response addSubscriber(@RequestBody SubscriberRequest subscriberRequest) {
+		LOGGER.info(subscriberRequest.toString());
 		FMSHandler fmsHandler = FMSHandler.getInstance();
-		fmsHandler.upsertSubscriber(connectionRequest, true);
+		fmsHandler.upsertSubscriber(subscriberRequest, true);
 		return new Response(true);
 	}
 
 	// Use case 5 for blocking subscriber
 	@RequestMapping(value = "/subscriber", method = RequestMethod.DELETE)
-	public Response deleteSubscriber(@RequestBody ConnectionRequest connectionRequest) {
+	public Response deleteSubscriber(@RequestBody SubscriberRequest subscriberRequest) {
 		FMSHandler fmsHandler = FMSHandler.getInstance();
-		fmsHandler.upsertSubscriber(connectionRequest, false);
+		fmsHandler.upsertSubscriber(subscriberRequest, false);
 		return new Response(true);
 	}
 

@@ -2,8 +2,6 @@ package com.spg.response;
 
 import java.util.List;
 
-import com.spg.model.Connection;
-
 public class PublishResponse extends Response {
 	private List<String> receipents;
 	public PublishResponse(boolean success, List<String> receipents) {
