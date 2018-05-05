@@ -1,9 +1,9 @@
 package com.spg.response;
 
-public class SuccessResponse {
+public class Response {
 	private boolean success;
 
-	public SuccessResponse(boolean success) {
+	public Response(boolean success) {
 		this.success = success;
 	}
 	public boolean isSuccess() {

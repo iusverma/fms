@@ -1,6 +1,7 @@
 package com.spg.app;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -10,7 +11,9 @@ import com.spg.enums.Status;
 import com.spg.model.Connection;
 import com.spg.request.ConnectionRequest;
 import com.spg.request.MessageUpdateRequset;
-import com.spg.response.SuccessResponse;
+import com.spg.response.ConnectionResponse;
+import com.spg.response.PublishResponse;
+import com.spg.response.Response;
 
 public class FMSHandler {
 	private static final Logger LOGGER = Logger.getLogger(FMSController.class);
@@ -25,8 +28,9 @@ public class FMSHandler {
 		return fmsHanlder;
 	}
 
-	public List<Connection> getConnections(){
-	    return connectionsList;
+	public ConnectionResponse getConnections(String email){
+		LOGGER.info("getConnections: Primary account: "+email);
+		return new ConnectionResponse(true, findConnections(email));
 	}
 
 	public List<Connection> getConnectionsList() {
@@ -37,7 +41,7 @@ public class FMSHandler {
 		this.connectionsList = connectionsList;
 	}
 	
-	public SuccessResponse addConncetion(ConnectionRequest connectionRequest) {
+	public Response addConncetion(ConnectionRequest connectionRequest) {
 		LOGGER.info(connectionRequest.toString());
 		String primaryUser = connectionRequest.getUser1();
 		String secondaryUser = connectionRequest.getUser2();
@@ -46,19 +50,19 @@ public class FMSHandler {
 		Connection friend = new Connection(primaryUser, secondaryUser,
 				ConnectionType.FRIEND, Status.SUBSCRIBERD);
 		connectionsList.add(friend);
-		return new SuccessResponse(true);
+		return new Response(true);
 	}
 	
-	public List<Connection> getCommonConnetions(ConnectionRequest connectionRequest) {
-		return connectionsList;
+	public ConnectionResponse findCommonConnetions(ConnectionRequest connectionRequest) {
+		return new ConnectionResponse(true, findConnections(connectionRequest.getUser1()));
 	}
 	
-	public List<Connection> publish(MessageUpdateRequset msgUpdateRequest) {
+	public PublishResponse publish(MessageUpdateRequset msgUpdateRequest) {
 		LOGGER.info("Updates sent to subscribers");
-		return connectionsList;
+		return new PublishResponse(true, findConnections(msgUpdateRequest.getSender()));
 	}
 	
-	public SuccessResponse upsertSubscriber(ConnectionRequest connectionRequest, boolean add) {
+	public Response upsertSubscriber(ConnectionRequest connectionRequest, boolean add) {
 		String primaryUser = connectionRequest.getUser1();
 		String secondaryUser = connectionRequest.getUser2();
 		//String primaryUser = connectionRequest.getFriends()[0];
@@ -67,6 +71,22 @@ public class FMSHandler {
 				ConnectionType.SUBSCRIBER, 
 				add==true?Status.SUBSCRIBERD:Status.BLOCKED);
 		connectionsList.add(friend);
-		return new SuccessResponse(true);
+		return new Response(true);
+	}
+
+	private List<String> findConnections(String primary){
+		LOGGER.info("findConnections: Primary account: "+primary);
+		List<String> connections = new ArrayList<String>();
+		Iterator<Connection> iter = connectionsList.iterator();
+		LOGGER.info("findConnections: connectionsList size: "+connectionsList.size());
+		while(iter.hasNext()) {
+			Connection connection = iter.next();
+			LOGGER.info("findConnections: connection.getPrimary(): "+connection.getPrimary());
+			if(connection.getPrimary().equals(primary)) {
+				connections.add(connection.getSecondary());
+			}
+		}
+		LOGGER.info("findConnections: Returning common connections: "+connections.size());
+		return connections;
 	}
 }

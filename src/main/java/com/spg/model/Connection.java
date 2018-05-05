@@ -39,4 +39,18 @@ public class Connection {
 	public void setStatus(Status status) {
 		this.status = status;
 	}
+	@Override
+	public boolean equals(Object object) {
+		if(object instanceof Connection) {
+			Connection connection = (Connection)object;
+			return (this.primary == connection.getPrimary() &&
+					this.secondary == connection.getSecondary() );
+		}else {
+			return false;
+		}
+	}
+	@Override
+	public int hashCode() {
+		return ((this.primary.length()+this.secondary.length())/10);
+	}
 }
