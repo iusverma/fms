@@ -1,0 +1,7 @@
+{
+    "success": true,
+    "receipents": [
+        "friend2@example.com",
+        "subscriber1@example.com"
+    ]
+}

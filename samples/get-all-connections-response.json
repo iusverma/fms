@@ -1,0 +1,44 @@
+[
+    {
+        "primary": "user1@example.com",
+        "secondary": "friend1@example.com",
+        "connectionType": "FRIEND",
+        "status": "SUBSCRIBERD"
+    },
+    {
+        "primary": "user1@example.com",
+        "secondary": "friend3@example.com",
+        "connectionType": "FRIEND",
+        "status": "SUBSCRIBERD"
+    },
+    {
+        "primary": "user1@example.com",
+        "secondary": "friend2@example.com",
+        "connectionType": "FRIEND",
+        "status": "SUBSCRIBERD"
+    },
+    {
+        "primary": "user2@example.com",
+        "secondary": "friend2@example.com",
+        "connectionType": "FRIEND",
+        "status": "UNSUBSCRIBED"
+    },
+    {
+        "primary": "user2@example.com",
+        "secondary": "friend3@example.com",
+        "connectionType": "FRIEND",
+        "status": "SUBSCRIBERD"
+    },
+    {
+        "primary": "user2@example.com",
+        "secondary": "subscriber1@example.com",
+        "connectionType": "SUBSCRIBER",
+        "status": "SUBSCRIBERD"
+    },
+    {
+        "primary": "user2@example.com",
+        "secondary": "subscriber2@example.com",
+        "connectionType": "SUBSCRIBER",
+        "status": "UNSUBSCRIBED"
+    }
+]
