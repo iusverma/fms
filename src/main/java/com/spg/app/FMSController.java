@@ -33,14 +33,14 @@ public class FMSController {
 
 	// Returns all connections
 	@RequestMapping(value = "/friends", method = RequestMethod.GET)
-	public List<Connection> friend() {
+	public List<Connection> friends() {
 		FMSHandler fmsHandler = FMSHandler.getInstance();
 		return fmsHandler.getConnectionsList();
 	}
 
 	// Use case 2 for getting friend list
 	@RequestMapping(value = "/friends", method = RequestMethod.POST)
-	public ConnectionResponse friend(@RequestBody Request request) {
+	public ConnectionResponse friends(@RequestBody Request request) {
 		LOGGER.info("RequestBody: " + request);
 		// Request requestObj = ConversionUtils.convertStringToRequestObject(request);
 		FMSHandler fmsHandler = FMSHandler.getInstance();
@@ -74,7 +74,7 @@ public class FMSController {
 
 	// Use case 6 for getting list of subscriber who are update with message
 	@RequestMapping(value = "/subscribers", method = RequestMethod.POST)
-	public PublishResponse subscribers(@RequestBody MessageUpdateRequset msgUpdateRequest) {
+	public PublishResponse publishMessage(@RequestBody MessageUpdateRequset msgUpdateRequest) {
 		FMSHandler fmsHandler = FMSHandler.getInstance();
 		return fmsHandler.publish(msgUpdateRequest);
 	}

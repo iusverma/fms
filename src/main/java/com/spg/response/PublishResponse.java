@@ -14,5 +14,7 @@ public class PublishResponse extends Response {
 	public void setReceipents(List<String> receipents) {
 		this.receipents = receipents;
 	}
-
+	public String toString() {
+		return "{success: "+super.isSuccess()+", recipients; "+receipents.toString()+"}";
+	}
 }
