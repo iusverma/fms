@@ -17,13 +17,19 @@ import com.spg.response.ConnectionResponse;
 import com.spg.response.PublishResponse;
 import com.spg.response.Response;
 
+/**
+ * FMSController
+ * @author Ayush Verma
+ * Controller for application, contains all APIs mapping
+ */
 @RestController
 public class FMSController {
 	private static final Logger LOGGER = Logger.getLogger(FMSController.class);
 
 	// Use case 1 for adding friend
-	// public SuccessResponse friend(@RequestBody ConnectionRequest
-	// connectionRequest) {
+	/**
+	 * friend, all new add friend connection will come here
+	 */
 	@RequestMapping(value = "/friend", method = RequestMethod.PUT)
 	public Response friend(@RequestBody ConnectionRequest connectionRequest) {
 		LOGGER.info(connectionRequest.toString());
@@ -31,6 +37,9 @@ public class FMSController {
 		return fmsHandler.addConncetion(connectionRequest);
 	}
 
+	/**
+	 * deleteFriend, all delete request for a friend will come here
+	 */
 	@RequestMapping(value = "/friend", method = RequestMethod.DELETE)
 	public Response deleteFriend(@RequestBody ConnectionRequest connectionRequest) {
 		LOGGER.info(connectionRequest.toString());
@@ -38,7 +47,9 @@ public class FMSController {
 		return fmsHandler.removeConncetion(connectionRequest);
 	}
 
-	// Returns all connections
+	/**
+	 * friends, request for list of all connection with full details
+	 */
 	@RequestMapping(value = "/friends", method = RequestMethod.GET)
 	public List<Connection> friends() {
 		FMSHandler fmsHandler = FMSHandler.getInstance();
@@ -46,6 +57,9 @@ public class FMSController {
 	}
 
 	// Use case 2 for getting friend list
+	/**
+	 * friends, request for list of all friends for any user will come here
+	 */
 	@RequestMapping(value = "/friends", method = RequestMethod.POST)
 	public ConnectionResponse friends(@RequestBody Request request) {
 		LOGGER.info("RequestBody: " + request);
@@ -55,6 +69,9 @@ public class FMSController {
 	}
 
 	// User case 3 for common friends
+	/**
+	 * commonFriends, request for common friends/subscriber betweem two user will come here
+	 */
 	@RequestMapping(value = "/friends/common", method = RequestMethod.POST)
 	public ConnectionResponse commonFriends(@RequestBody ConnectionRequest connectionRequest) {
 		LOGGER.info(connectionRequest.toString());
@@ -63,6 +80,9 @@ public class FMSController {
 	}
 
 	// Use case 4 for adding subscriber
+	/**
+	 * addSubscriber, request for adding a subscriber will come here
+	 */
 	@RequestMapping(value = "/subscriber", method = RequestMethod.PUT)
 	public Response addSubscriber(@RequestBody SubscriberRequest subscriberRequest) {
 		LOGGER.info(subscriberRequest.toString());
@@ -71,6 +91,9 @@ public class FMSController {
 		return new Response(true);
 	}
 
+	/**
+	 * addSubscriber, request for deleting a subscriber will come here
+	 */
 	// Use case 5 for blocking subscriber
 	@RequestMapping(value = "/subscriber", method = RequestMethod.DELETE)
 	public Response deleteSubscriber(@RequestBody SubscriberRequest subscriberRequest) {
@@ -79,6 +102,9 @@ public class FMSController {
 		return new Response(true);
 	}
 
+	/**
+	 * addSubscriber, request for publishing message to user's subscriber will come here
+	 */
 	// Use case 6 for getting list of subscriber who are update with message
 	@RequestMapping(value = "/subscribers", method = RequestMethod.POST)
 	public PublishResponse publishMessage(@RequestBody MessageUpdateRequset msgUpdateRequest) {
