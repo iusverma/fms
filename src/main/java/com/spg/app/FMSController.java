@@ -31,6 +31,13 @@ public class FMSController {
 		return fmsHandler.addConncetion(connectionRequest);
 	}
 
+	@RequestMapping(value = "/friend", method = RequestMethod.DELETE)
+	public Response deleteFriend(@RequestBody ConnectionRequest connectionRequest) {
+		LOGGER.info(connectionRequest.toString());
+		FMSHandler fmsHandler = FMSHandler.getInstance();
+		return fmsHandler.removeConncetion(connectionRequest);
+	}
+
 	// Returns all connections
 	@RequestMapping(value = "/friends", method = RequestMethod.GET)
 	public List<Connection> friends() {

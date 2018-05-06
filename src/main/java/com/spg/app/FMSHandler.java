@@ -59,7 +59,25 @@ public class FMSHandler {
 			return new ErrorResponse(false,"Cannot add connection, connection already present.");
 		}
 	}
-	
+
+	public Response removeConncetion(ConnectionRequest connectionRequest) {
+		LOGGER.info(connectionRequest.toString());
+		String primaryUser = connectionRequest.getUser1();
+		String secondaryUser = connectionRequest.getUser2();
+		//String primaryUser = connectionRequest.getFriends()[0];
+		//String secondaryUser = connectionRequest.getFriends()[1];
+
+		Iterator<Connection> iter = connectionsList.iterator();
+		while(iter.hasNext()) {
+			Connection conn = iter.next();
+			if(conn.getPrimary().equals(primaryUser) && conn.getSecondary().equals(secondaryUser)) {
+				iter.remove();
+				return new Response(true);
+			}
+		}
+		return new ErrorResponse(false,"Cannot remove connection, no connection present with given details.");
+	}
+
 	public ConnectionResponse findCommonConnetions(ConnectionRequest connectionRequest) {
 		List<String> connectionsOfUser1 = findConnections(connectionRequest.getUser1());
 		List<String> connectionsOfUser2 = findConnections(connectionRequest.getUser2());
@@ -113,7 +131,11 @@ public class FMSHandler {
 					Connection connection = iter.next();
 					if(connection.getPrimary().equals(primaryUser) 
 							&& connection.getSecondary().equals(secondaryUser)) {
-						connection.setStatus(Status.UNSUBSCRIBED);
+						if(connection.getConnectionType().equals(ConnectionType.FRIEND)) {
+							connection.setStatus(Status.UNSUBSCRIBED);
+						}else {
+							iter.remove();
+						}
 						break;
 					}
 				}

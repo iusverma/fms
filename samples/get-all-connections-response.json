@@ -34,11 +34,5 @@
         "secondary": "subscriber1@example.com",
         "connectionType": "SUBSCRIBER",
         "status": "SUBSCRIBERD"
-    },
-    {
-        "primary": "user2@example.com",
-        "secondary": "subscriber2@example.com",
-        "connectionType": "SUBSCRIBER",
-        "status": "UNSUBSCRIBED"
     }
 ]

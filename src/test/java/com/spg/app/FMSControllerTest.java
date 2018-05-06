@@ -81,19 +81,22 @@ public class FMSControllerTest {
 	public void deleteSubscriberTest() {
 		FMSController fmsController = new FMSController();
 		Assert.assertEquals(fmsController.friends().size(), 8);
+		// Removing a subscriber from update list
 		Assert.assertTrue(fmsController.deleteSubscriber(createSubscriberRequest(USER2, SUBSCRIBER1)).isSuccess());
-		Assert.assertEquals(fmsController.friends().size(), 8);
+		Assert.assertEquals(fmsController.friends().size(), 7);
 		Iterator <Connection> iter = fmsController.friends().iterator();
 		while(iter.hasNext()) {
+			boolean deleted = true;
 			Connection conn = iter.next();
 			if(conn.getPrimary().equals(USER2) && conn.getSecondary().equals(SUBSCRIBER1)) {
-				Assert.assertEquals(conn.getConnectionType(), ConnectionType.SUBSCRIBER);
-				Assert.assertEquals(conn.getStatus(), Status.UNSUBSCRIBED);
+				deleted = false;
 			}
+			Assert.assertTrue(deleted);
 		}
 		
+		// Removing a friend for update list
 		Assert.assertTrue(fmsController.deleteSubscriber(createSubscriberRequest(USER2, FRIEND1)).isSuccess());
-		Assert.assertEquals(fmsController.friends().size(), 8);
+		Assert.assertEquals(fmsController.friends().size(), 7);
 		Iterator <Connection> iter1 = fmsController.friends().iterator();
 		while(iter1.hasNext()) {
 			Connection conn = iter1.next();
@@ -107,12 +110,29 @@ public class FMSControllerTest {
 	@Test(priority=6)
 	public void sendUpdateTest() {
 		FMSController fmsController = new FMSController();
-		Assert.assertEquals(fmsController.friends().size(), 8);
+		Assert.assertEquals(fmsController.friends().size(), 7);
 		MessageUpdateRequset message = new MessageUpdateRequset(USER2, "I am back");
 		PublishResponse response = fmsController.publishMessage(message);
 		Assert.assertTrue(response.isSuccess());
 		Assert.assertEquals(response.getReceipents().size(),2);
 		System.out.println(response.toString());
+	}
+	
+	@Test(priority=7)
+	public void unfriendTest() {
+		FMSController fmsController = new FMSController();
+		Assert.assertEquals(fmsController.friends().size(), 7);
+		Assert.assertTrue(fmsController.deleteFriend(new ConnectionRequest(USER1, FRIEND1)).isSuccess());
+		Assert.assertEquals(fmsController.friends().size(), 6);
+		Iterator <Connection> iter = fmsController.friends().iterator();
+		while(iter.hasNext()) {
+			boolean deleted = true;
+			Connection conn = iter.next();
+			if(conn.getPrimary().equals(USER1) && conn.getSecondary().equals(FRIEND1)) {
+				deleted = false;
+			}
+			Assert.assertTrue(deleted);
+		}
 	}
 
 	private ConnectionRequest createConnectionRequest(String primaryEmail, String secondaryEmail) {

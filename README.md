@@ -1,20 +1,20 @@
-This application is build on follwing
+#This application is build on follwing
 1. Java version 1.8
 2. Maven version 3.5.2
 
-How to build
+# How to build
 1. Clone repository to you local machine
 2. Run mvn clean install inside fms folder
 
-How to run server
+# How to run server
 1. Run following command inside fms folder
 java -jar target/fms-0.0.1-SNAPSHOT.jar
 
-Application URIs (all request response are inside fms/samples folder)
+# Application URIs (all request response are inside fms/samples folder)
 1. Add a new friend
 URI - PUT - http://localhost:8080/friend
-Sample Request - add-friend-request.json
-Sample Response - add-friend-response.json
+Sample Request - friend-request.json
+Sample Response - friend-response.json
 
 2. Get friends for an account
 URI - POST - http://localhost:8080/friends
@@ -46,5 +46,10 @@ URI - GET - http://localhost:8080/friends
 Sample Request - NA
 Sample Response - get-all-connections-response.json
 
-Alternatively you can also download the postman collection from here
+8. Delete a existing friend connetion
+URI - DELETE - http://localhost:8080/friend
+Sample Request - friend-request.json
+Sample Response - friend-response.json
+
+- Alternatively you can also download the postman collection from here
 https://www.getpostman.com/collections/6e3222a6836b405136dd
