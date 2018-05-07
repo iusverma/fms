@@ -87,8 +87,8 @@ public class FMSController {
 	public Response addSubscriber(@RequestBody SubscriberRequest subscriberRequest) {
 		LOGGER.info(subscriberRequest.toString());
 		FMSHandler fmsHandler = FMSHandler.getInstance();
-		fmsHandler.upsertSubscriber(subscriberRequest, true);
-		return new Response(true);
+		Response upsertResponse = fmsHandler.upsertSubscriber(subscriberRequest, true);
+		return upsertResponse;
 	}
 
 	/**
@@ -98,8 +98,8 @@ public class FMSController {
 	@RequestMapping(value = "/subscriber", method = RequestMethod.DELETE)
 	public Response deleteSubscriber(@RequestBody SubscriberRequest subscriberRequest) {
 		FMSHandler fmsHandler = FMSHandler.getInstance();
-		fmsHandler.upsertSubscriber(subscriberRequest, false);
-		return new Response(true);
+		Response upsertResponse = fmsHandler.upsertSubscriber(subscriberRequest, false);
+		return upsertResponse;
 	}
 
 	/**

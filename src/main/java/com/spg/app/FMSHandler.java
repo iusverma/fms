@@ -150,15 +150,13 @@ public class FMSHandler {
 	 * upsertSubscriber
 	 * add a new subscriber
 	 * deletes an existing subscriber
-	 * unsubcriber a friend from updates
+	 * Unsubscribe a friend from updates
 	 */
 	public Response upsertSubscriber(SubscriberRequest subscriberRequest, boolean add) {
 		LOGGER.info("upsertSubscriber: "+subscriberRequest.toString());
 		LOGGER.info("subcribe: "+add);
 		String primaryUser = subscriberRequest.getRequestor();
 		String secondaryUser = subscriberRequest.getTarget();
-		//String primaryUser = connectionRequest.getFriends()[0];
-		//String secondaryUser = connectionRequest.getFriends()[1];
 		if(add) {
 			/**
 			 * Request is for adding a new subscription
@@ -177,7 +175,7 @@ public class FMSHandler {
 				 * This is an existing entry with matching details, can't add a new one
 				 */
 				LOGGER.info("subscriber already present");
-				return new ErrorResponse(false,"Cannot add connection, connection already present.");
+				return new ErrorResponse(false,"Cannot add subscriber, subscriber already present.");
 			}
 		}else {
 			/**

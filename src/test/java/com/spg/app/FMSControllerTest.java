@@ -13,6 +13,7 @@ import com.spg.request.MessageUpdateRequset;
 import com.spg.request.Request;
 import com.spg.request.SubscriberRequest;
 import com.spg.response.ConnectionResponse;
+import com.spg.response.ErrorResponse;
 import com.spg.response.PublishResponse;
 
 /**
@@ -27,6 +28,7 @@ public class FMSControllerTest {
 	private static final String FRIEND3 = "friend3@example.com";
 	private static final String FRIEND4 = "friend4@example.com";
 	private static final String SUBSCRIBER1 = "subscriber1@example.com";
+	private static final String SUBSCRIBER2 = "subscriber2@example.com";
 
 	/**
 	 * Test for basic add friends and verifies they are in connection list
@@ -50,7 +52,7 @@ public class FMSControllerTest {
 	}
 
 	/**
-	 * Tet for finding all common friends for two users
+	 * Test for finding all common friends for two users
 	 */
 	@Test(priority=2)
 	public void commonFriendTest() {
@@ -155,7 +157,7 @@ public class FMSControllerTest {
 	}
 
 	/**
-	 * Test for delete a friend from connetions
+	 * Test for delete a friend from connections
 	 */
 	@Test(priority=7)
 	public void unfriendTest() {
@@ -172,6 +174,32 @@ public class FMSControllerTest {
 			}
 			Assert.assertTrue(deleted);
 		}
+	}
+
+	/** Following are some of the negative test cases */
+	@Test(priority=8)
+	public void addDuplicateConnection() {
+		FMSController fmsController = new FMSController();
+		Assert.assertTrue(fmsController.friend(createConnectionRequest(USER1,FRIEND1)).isSuccess());
+		ErrorResponse response = (ErrorResponse)fmsController.friend(createConnectionRequest(USER1,FRIEND1));
+		Assert.assertFalse(response.isSuccess());
+		Assert.assertEquals(response.getMessage(), "Cannot add connection, connection already present.");
+	}
+
+	@Test(priority=9)
+	public void addDuplicateSubscriber() {
+		FMSController fmsController = new FMSController();
+		ErrorResponse response = (ErrorResponse)fmsController.addSubscriber(createSubscriberRequest(USER1,SUBSCRIBER1));
+		Assert.assertFalse(response.isSuccess());
+		Assert.assertEquals(response.getMessage(), "Cannot add subscriber, subscriber already present.");
+	}
+
+	@Test(priority=10)
+	public void removeNonExistingSubscriber() {
+		FMSController fmsController = new FMSController();
+		ErrorResponse response = (ErrorResponse)fmsController.deleteSubscriber(createSubscriberRequest(USER1,SUBSCRIBER2));
+		Assert.assertFalse(response.isSuccess());
+		Assert.assertEquals(response.getMessage(), "Cannot not block, connection not present.");
 	}
 
 	/**
